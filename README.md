@@ -313,7 +313,70 @@ This API leverages several FastAPI features:
 5. **Easy Testing**: Built-in testing capabilities
 
 
-## Next Steps
+
+## Software Development Analysis
+
+### SDLC Stage(s) Represented
+This code primarily represents the **Implementation** and **Testing** stages:
+
+- **Implementation**: Core functionality is coded with FastAPI endpoints, data models, and basic CRUD operations
+- **Testing**: Manual testing capability through Swagger UI and curl commands
+- **Design Elements**: Basic API structure and data modeling (Report class) show early design decisions
+
+*Missing stages*: Requirements gathering, formal design documentation, comprehensive testing, and deployment planning.
+
+### Design Principles Applied
+
+**Single Responsibility Principle (SOLID)**:
+- Each endpoint has one clear responsibility:
+  - `submit_report()` only handles single report submission
+  - `get_reports()` only retrieves all reports  
+  - `filter_reports()` only handles platform filtering
+  - `delete_report()` only manages report deletion
+
+**DRY (Don't Repeat Yourself)**:
+- Reuses the `Report` Pydantic model across all endpoints instead of duplicating validation logic
+- Uses the same `reports` list for all operations rather than separate storage mechanisms
+
+*Areas for improvement*: Could better apply Separation of Concerns by moving business logic to separate service classes.
+
+### DevOps Practices for Improvement
+
+**Automation**:
+```bash
+# GitHub Actions CI/CD pipeline
+- Automated testing on code push
+- Automatic deployment to staging/production
+- Code quality checks with linting tools
+```
+
+**Testing**:
+```python
+# Add pytest unit tests
+def test_submit_report():
+    response = client.post("/report", json=test_data)
+    assert response.status_code == 200
+
+# Integration tests for all endpoints
+# Load testing for performance validation
+```
+
+**Infrastructure as Code**:
+```yaml
+# Docker containerization
+FROM python:3.9
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0"]
+```
+
+**Monitoring & Logging**:
+- Add structured logging for all endpoints
+- Health checks and metrics collection
+- Error tracking and alerting systems
+
+# Next Steps
 
 ### Immediate Improvements:
 1. **Database Integration**: Replace in-memory list with a database (SQLite, PostgreSQL, MongoDB)
